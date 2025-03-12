@@ -1,0 +1,101 @@
+# Generic
+.DS_Store
+*.tgz
+*.zip
+.dccache
+
+## Kubeconfig
+kubeconfig
+generated/
+
+## Secrets
+credentials.txt
+credentials.env
+Wallet_*
+**/.env
+deploy/helm-chart/**/secrets/*
+!deploy/helm-chart/**/secrets/*.md
+
+## helm
+# lockfiles for requirements.yaml for dependent charts
+requirements.lock
+
+## Folders
+bin/
+**/.gradle/**
+**/.settings/**
+**/build/**
+**/target/**
+**/.vscode/**
+**/.project
+**/.classpath
+installs/
+**/.idea/**
+**/node_modules/**
+deploy/basic/terraform/image*
+
+# Log file
+*.log
+
+### Go ###
+# Binaries for programs and plugins
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+### Go Patch ###
+vendor/
+Godeps/
+pkg/
+
+### Java ###
+# Compiled class file
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.tar.xz
+*.rar
+
+# Keystores
+tnsnames.ora
+keystore.jks
+truststore.jks
+
+### Terraform ###
+# Local .terraform directories
+**/.terraform/*
+**/.terrafor*
+!.terraform.lock.hcl
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# Ignore any .tfvars files that are generated automatically for each Terraform run. Most
+# .tfvars files are managed as part of configuration and so should be included in
+# version control.
+#
+*.tfvars
+
+# Ignore override files as they are usually used to override resources locally and so
+# are not checked in
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# tf crash log
+crash.log
+
+
