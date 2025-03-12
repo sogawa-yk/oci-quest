@@ -35,7 +35,12 @@ resource "oci_objectstorage_preauthrequest" "mushop_wallet_preauth" {
 
 resource "oci_objectstorage_object" "mushop_basic" {
   bucket    = oci_objectstorage_bucket.mushop.name
-  source    = "./scripts/mushop-basic.tar.xz"
+  source_uri_details {
+    namespace = "orasejapan"
+    bucket = "mushop-artifacts"
+    object = "mushop-basic.tar.xz"
+    region = "ap-sydney-1"
+  }
   namespace = local.namespace
   object    = "mushop_basic"
 }
