@@ -27,7 +27,8 @@ yum -y install --disablerepo=ol7_developer_EPEL nodejs
 # Install Oracle Instant Client
 yum -y install oracle-release-el7
 yum-config-manager --enable ol7_oracle_instantclient
-yum -y install oracle-instantclient${oracle_client_version}-basic oracle-instantclient${oracle_client_version}-jdbc oracle-instantclient${oracle_client_version}-sqlplus
+# JDBC Thin接続なので不要??
+#yum -y install oracle-instantclient${oracle_client_version}-basic oracle-instantclient${oracle_client_version}-jdbc oracle-instantclient${oracle_client_version}-sqlplus
 
 # Set httpd access SELinux
 setsebool -P httpd_can_network_connect 1
