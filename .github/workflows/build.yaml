@@ -31,3 +31,11 @@ jobs:
         with:
           name: mushop-basic.tar.xz
           path: output/scripts/mushop-basic.tar.xz
+  tags:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          git tag `cat terraform/VERSION`
+      - run: |
+          git push origin `cat terraform/VERSION`
