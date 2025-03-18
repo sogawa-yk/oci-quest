@@ -16,7 +16,6 @@ jobs:
           docker buildx create --name multibuilder
           docker buildx use multibuilder
       - name: Build image
-        working-directory: /
         run: |
           docker buildx build --pull --rm --load -t mushop-basic -f Dockerfile .
       - name: Generate RM Stack
