@@ -4,3 +4,6 @@ provider "oci" {
 
 provider "cloudinit" {
 }
+
+provider "http" {
+}
