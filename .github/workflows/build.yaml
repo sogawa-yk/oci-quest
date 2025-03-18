@@ -1,0 +1,32 @@
+name: Build and Publish Artifacts
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - terraform/VERSION
+
+jobs:
+  build_and_publish_artifact:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Prepare
+        run: |
+          docker buildx create --name multibuilder
+          docker buildx use multibuilder
+      - name: Build image
+        working-directory: /
+        run: |
+          docker buildx build --pull --rm --load -t mushop-basic -f Dockerfile .
+      - name: Generate RM Stack
+        run: |
+          docker run -v $PWD:/transfer --rm --entrypoint cp mushop-basic:latest /package/mushop-basic-stack.zip /transfer/mushop-basic-stack.zip
+      - name: Unzip RM Stack
+        run: |
+          unzip -d output mushop-basic-stack.zip
+      - name: Publish Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mushop-basic.tar.xz
+          path: output/scripts/mushop-basic.tar.xz
