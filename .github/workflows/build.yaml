@@ -20,17 +20,14 @@ jobs:
       - name: Build image
         run: |
           docker buildx build --pull --rm --load -t mushop-basic -f Dockerfile .
-      - name: Generate RM Stack
+      - name: Generate Artifact
         run: |
-          docker run -v $PWD:/transfer --rm --entrypoint cp mushop-basic:latest /package/mushop-basic-stack.zip /transfer/mushop-basic-stack.zip
-      - name: Unzip RM Stack
-        run: |
-          unzip -d output mushop-basic-stack.zip
+          docker run -v $PWD:/transfer --rm --entrypoint cp mushop-basic:latest /package/mushop-basic.tar.xz /transfer/terraform/scripts/mushop-basic.tar.xz
       - name: Publish Artifact
         uses: actions/upload-artifact@v4
         with:
           name: mushop-basic.tar.xz
-          path: output/scripts/mushop-basic.tar.xz
+          path: terraform/scripts/mushop-basic.tar.xz
   tags:
     runs-on: ubuntu-latest
     steps:
