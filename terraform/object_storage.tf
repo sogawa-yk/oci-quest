@@ -39,7 +39,7 @@ data "http" "mushop_artifact" {
 
 resource "oci_objectstorage_object" "mushop_basic" {
   bucket    = oci_objectstorage_bucket.mushop.name
-  content   = data.http.mushop_artifact.body
+  content   = data.http.mushop_artifact.response_body
   namespace = local.namespace
   object    = "mushop_basic"
 }
