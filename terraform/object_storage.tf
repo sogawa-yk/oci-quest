@@ -37,11 +37,19 @@ data "http" "mushop_artifact" {
   url = format("https://github.com/oracle-japan/oci-quest/releases/download/%s/mushop-basic.tar.xz", "file(${path.module}/VERSION)")
 }
 
+resource "null_resource" "download_tar" {
+  provisioner "local-exec" {
+    command = format("curl -o /tmp/mushop-basic.tar.xz https://github.com/oracle-japan/oci-quest/releases/download/%s/mushop-basic.tar.xz", "file(${path.module}/VERSION)")
+  }
+}
+
 resource "oci_objectstorage_object" "mushop_basic" {
-  bucket    = oci_objectstorage_bucket.mushop.name
-  content   = data.http.mushop_artifact.response_body
-  namespace = local.namespace
-  object    = "mushop_basic"
+  bucket       = oci_objectstorage_bucket.mushop.name
+  namespace    = local.namespace
+  object       = "mushop_basic"
+  source       = "/tmp/mushop-basic.tar.xz"
+  content_type = "application/x-xz"
+  depends_on   = [null_resource.download_tar]
 }
 resource "oci_objectstorage_preauthrequest" "mushop_lite_preauth" {
   access_type  = "ObjectRead"
