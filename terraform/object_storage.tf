@@ -34,7 +34,7 @@ resource "oci_objectstorage_preauthrequest" "mushop_wallet_preauth" {
 }
 
 data "http" "mushop_artifact" {
-  url = format("https://github.com/oracle-japan/oci-quest/releases/download/%s/mushop-basic.tar.xz.zip", "file(${path.module}/VERSION)")
+  url = format("https://github.com/oracle-japan/oci-quest/releases/download/%s/mushop-basic.tar.xz", "file(${path.module}/VERSION)")
 }
 
 resource "oci_objectstorage_object" "mushop_basic" {
