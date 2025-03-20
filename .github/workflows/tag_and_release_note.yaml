@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - terraform/VERSION
-  workflow_dispatch:
+  workflow_call:
 
 jobs:
   tag_and_release_note:
