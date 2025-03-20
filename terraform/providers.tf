@@ -7,3 +7,6 @@ provider "cloudinit" {
 
 provider "http" {
 }
+
+provider "null" {
+}

@@ -33,13 +33,9 @@ resource "oci_objectstorage_preauthrequest" "mushop_wallet_preauth" {
   object_name  = oci_objectstorage_object.mushop_wallet.object
 }
 
-data "http" "mushop_artifact" {
-  url = format("https://github.com/oracle-japan/oci-quest/releases/download/%s/mushop-basic.tar.xz", "file(${path.module}/VERSION)")
-}
-
 resource "null_resource" "download_tar" {
   provisioner "local-exec" {
-    command = format("curl -o /tmp/mushop-basic.tar.xz https://github.com/oracle-japan/oci-quest/releases/download/%s/mushop-basic.tar.xz", "file(${path.module}/VERSION)")
+    command = format("curl -o /tmp/mushop-basic.tar.xz https://github.com/oracle-japan/oci-quest/releases/download/%s/mushop-basic.tar.xz", file("${path.module}/VERSION"))
   }
 }
 
