@@ -2,10 +2,8 @@ name: Generate Tag and Release Note
 
 on:
   push:
-    branches:
+    branches-ignore:
       - main
-    paths:
-      - terraform/VERSION
   workflow_call:
 
 jobs:
