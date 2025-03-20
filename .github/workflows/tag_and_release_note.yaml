@@ -16,11 +16,11 @@ jobs:
       # Release Noteを作成する対象のTagを取得する
       - name: Get tag
         run: |
-          VERSION=`cat terraform/VERSION`
+          echo VERSION=`cat terraform/VERSION` >> $GITHUB_ENV
       - run: |
-          git tag $VERSION
+          git tag ${{ env.VERSION }}
       - run: |
-          git push origin $VERSION
+          git push origin ${{ env.VERSION }}
 
       - name: Get artifact
         run: |
