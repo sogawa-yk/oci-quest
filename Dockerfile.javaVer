@@ -1,0 +1,171 @@
+#
+# Copyright (c) 2019-2021 Oracle and/or its affiliates. All rights reserved.
+# Licensed under the Universal Permissive License v 1.0 as shown at http://oss.oracle.com/licenses/upl.
+# 
+
+###############################
+#    ----- STOREFRONT -----   #
+#    Build stage (node/npm)   #
+###############################
+FROM --platform=${BUILDPLATFORM:-linux/amd64} node:16-alpine as storefront-builder
+
+RUN apk update && apk add --no-cache \
+  autoconf \
+  automake \
+  bash \
+  g++ \
+  libtool \
+  libc6-compat \
+  libjpeg-turbo-dev \
+  libpng-dev \
+  make \
+  nasm
+
+RUN npm config set loglevel warn \
+  && npm set progress=false
+
+# install dependencies
+WORKDIR /tmp
+COPY src/storefront/package.json /tmp/package.json
+COPY src/storefront/package-lock.json /tmp/package-lock.json
+RUN npm ci
+RUN mkdir -p /app/storefront && cp -a /tmp/node_modules /app/storefront/
+RUN rm -rf /tmp/node_modules
+
+# copy source and build
+WORKDIR /app/storefront
+COPY src/storefront/src src
+COPY src/storefront/*.js* ./
+COPY src/storefront/VERSION VERSION
+
+ARG STATIC_ASSET_URL
+ENV STATIC_ASSET_URL ${STATIC_ASSET_URL:-""}
+ENV NODE_ENV "production"
+RUN npm run build
+#    ----- STOREFRONT -----   #
+
+###############################
+#    ----- API Gateway -----  #
+#    Build stage (node/npm)   #
+###############################
+FROM --platform=${TARGETPLATFORM:-linux/amd64} node:16-alpine as api-builder
+
+WORKDIR /app/api
+COPY src/api/. .
+
+# Prune (prom-client removed to fix KBs for orm stack)
+RUN rm -rf test scripts && \
+  rm package-lock.json && \
+  npm uninstall prom-client && \
+  npm uninstall connect-redis && \
+  npm prune --production
+
+#    ----- API Gateway -----  #
+
+###############################
+#  ----- Image Assets -----   #
+###############################
+FROM --platform=${BUILDPLATFORM:-linux/amd64} node:16-alpine as assets-builder
+
+RUN apk update && apk add --no-cache \
+  autoconf \
+  automake \
+  bash \
+  g++ \
+  libtool \
+  libc6-compat \
+  libjpeg-turbo-dev \
+  libpng-dev \
+  make \
+  nasm
+
+COPY src/assets/package.json /tmp/package.json
+COPY src/assets/package-lock.json /tmp/package-lock.json
+RUN cd /tmp && npm ci
+RUN mkdir -p /app/assets && cp -a /tmp/node_modules /app/assets/
+RUN rm -rf /tmp/node_modules
+
+WORKDIR /app/assets
+COPY src/assets/. .
+RUN rm -rf /app/assets/hero
+
+RUN npm run build
+RUN rm -rf node_modules products hero *.md
+#  ----- Image Assets -----   #
+
+###############################
+#    ------ Catalogue ------  #
+#    Build stage (Java)       #
+###############################
+
+FROM --platform=${BUILDPLATFORM:-linux/amd64} maven:3.9-eclipse-temurin-21 AS catalogue-builder
+WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
+
+FROM --platform=$TARGETPLATFORM eclipse-temurin:21-jre
+WORKDIR /app
+COPY --from=builder /app/target/catalogue-1.0.0.jar app.jar
+
+ENV CATALOGUE_DATABASE_URL=jdbc:oracle:thin:@localhost:1521/XEPDB1 \
+  CATALOGUE_DATABASE_USER=catalogue \
+  CATALOGUE_DATABASE_PASSWORD=default
+
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]
+
+###############################
+#  ----- Runtime Image -----  #
+#   runtime app and stack     #
+###############################
+
+# Base image
+FROM --platform=${TARGETPLATFORM:-linux/amd64} oraclelinux:7-slim
+ARG oracleClientVersion
+RUN yum clean metadata && \
+  yum update -y && \
+  yum -y install oracle-release-el7 && \
+  yum-config-manager --enable ol7_latest && \
+  yum -y install zip && \
+  yum -y install oracle-nodejs-release-el7 && \
+  yum -y install nodejs && \
+  yum -y install httpd && \
+  yum -y install oracle-epel-release-el7 && \
+  yum -y install upx && \
+  yum clean all && \
+  rm -rf /var/cache/yum
+
+COPY terraform/scripts/httpd.conf /etc/httpd/conf/
+COPY terraform/scripts/docker_entrypoint.sh /
+RUN chmod +x /docker_entrypoint.sh
+
+WORKDIR /
+
+# Copy Services apps
+COPY --from=storefront-builder /app/storefront/build /app/storefront
+COPY --from=api-builder /app/api /app/api
+COPY --from=catalogue-builder /app/app.jar /app/catalogue
+COPY src/catalogue_java/VERSION /app/catalogue/
+
+# Create zip package of the Apps and local images
+RUN mkdir /package && tar cv /app | xz -3e > /package/mushop-basic.tar.xz
+
+# Create ORM package
+WORKDIR /basic
+COPY terraform/VERSION /basic/
+COPY terraform/*.tf /basic/
+COPY terraform/*.tfvars.example /basic/
+COPY terraform/schema.yaml /basic/
+COPY terraform/scripts /basic/scripts
+COPY src/catalogue_java/dbdata/atp_mushop_catalogue.sql /basic/scripts/
+COPY --from=assets-builder /app/assets/dist/ /basic/images/
+RUN cp /package/mushop-basic.tar.xz /basic/scripts/
+RUN zip -9 -r /package/mushop-basic-stack.zip .
+
+VOLUME ["/transfer/"]
+ENTRYPOINT ["/docker_entrypoint.sh"]
+EXPOSE 8080
+EXPOSE 3000
+EXPOSE 3005
+
+#    ----- Runtime Image ------  #

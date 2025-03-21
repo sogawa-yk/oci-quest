@@ -1,9 +1,9 @@
-FROM maven:3.9-eclipse-temurin-21 AS builder
+FROM --platform=${BUILDPLATFORM:-linux/amd64} maven:3.9-eclipse-temurin-21 AS catalogue-builder
 WORKDIR /app
 COPY . .
 RUN mvn clean package -DskipTests
 
-FROM eclipse-temurin:21-jre
+FROM --platform=$TARGETPLATFORM eclipse-temurin:21-jre
 WORKDIR /app
 COPY --from=builder /app/target/catalogue-1.0.0.jar app.jar
 
