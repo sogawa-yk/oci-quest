@@ -34,8 +34,11 @@ resource "oci_objectstorage_preauthrequest" "mushop_wallet_preauth" {
 }
 
 resource "null_resource" "download_tar" {
+  triggers = {
+    always_run = timestamp()
+  }
   provisioner "local-exec" {
-    command = format("wget -O /tmp/mushop-basic.tar.xz https://github.com/oracle-japan/oci-quest/releases/download/%s/mushop-basic.tar.xz", file("${path.module}/VERSION"))
+    command = format("wget -O /tmp/mushop-basic.tar.xz https://github.com/oracle-japan/oci-quest/releases/download/%s/mushop-basic.tar.xz", replace(file("${path.module}/VERSION"), "\n", ""))
   }
 }
 
