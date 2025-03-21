@@ -98,14 +98,15 @@ RUN rm -rf node_modules products hero *.md
 #    Build stage (Java)       #
 ###############################
 
-FROM --platform=${BUILDPLATFORM:-linux/amd64} maven:3.9-eclipse-temurin-21 AS catalogue-builder
+FROM --platform=${BUILDPLATFORM:-linux/amd64} maven:3.9-eclipse-temurin-21 AS builder
 WORKDIR /app
+COPY src/catalogue_java/ .
 COPY . .
 RUN mvn clean package -DskipTests
 
-FROM --platform=$TARGETPLATFORM eclipse-temurin:21-jre
+FROM --platform=$TARGETPLATFORM eclipse-temurin:21-jre AS catalogue-builder
 WORKDIR /app
-COPY --from=catalogue-builder /app/target/catalogue-1.0.0.jar app.jar
+COPY --from=builder /app/target/catalogue-1.0.0.jar app.jar
 
 ENV CATALOGUE_DATABASE_URL=jdbc:oracle:thin:@localhost:1521/XEPDB1 \
   CATALOGUE_DATABASE_USER=catalogue \
@@ -145,7 +146,6 @@ WORKDIR /
 COPY --from=storefront-builder /app/storefront/build /app/storefront
 COPY --from=api-builder /app/api /app/api
 COPY --from=catalogue-builder /app/app.jar /app/catalogue
-COPY src/catalogue_java/VERSION /app/catalogue/
 
 # Create zip package of the Apps and local images
 RUN mkdir /package && tar cv /app | xz -3e > /package/mushop-basic.tar.xz
