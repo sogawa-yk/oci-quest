@@ -35,7 +35,7 @@ resource "oci_objectstorage_preauthrequest" "mushop_wallet_preauth" {
 
 resource "null_resource" "download_tar" {
   provisioner "local-exec" {
-    command = format("curl -o /tmp/mushop-basic.tar.xz https://github.com/oracle-japan/oci-quest/releases/download/%s/mushop-basic.tar.xz", file("${path.module}/VERSION"))
+    command = format("wget -O /tmp/mushop-basic.tar.xz https://github.com/oracle-japan/oci-quest/releases/download/%s/mushop-basic.tar.xz", file("${path.module}/VERSION"))
   }
 }
 
@@ -44,7 +44,7 @@ resource "oci_objectstorage_object" "mushop_basic" {
   namespace    = local.namespace
   object       = "mushop_basic"
   source       = "/tmp/mushop-basic.tar.xz"
-  content_type = "application/x-xz"
+  content_type = "application/x-tar"
   depends_on   = [null_resource.download_tar]
 }
 resource "oci_objectstorage_preauthrequest" "mushop_lite_preauth" {
