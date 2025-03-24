@@ -34,7 +34,7 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             https://api.github.com/repos/oracle-japan/oci-quest/releases \
-            -d '{"tag_name": "${{ env.VERSION }}", "target_commitish": "main","name": "${{ env.VERSION }}", "body": "Automatic release", "draft":false, "prerelease":false, "generate_release_notes":false}' \
+            -d '{"tag_name": "${{ env.VERSION }}", "target_commitish": "main", "name": "${{ env.VERSION }}", "body": "Automatic release", "draft":false, "prerelease":false, "generate_release_notes":false}' \
             | jq -r '.id') >> $GITHUB_ENV
       - name: Upload assets
         run: |

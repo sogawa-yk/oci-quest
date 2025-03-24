@@ -5,3 +5,7 @@ output "lb_public_url" {
 output "bastion_ip" {
   value = oci_core_instance.mushop_bastion.public_ip
 }
+
+output "app_private_ip" {
+  value = oci_core_instance.mushop_app_instance.private_ip
+}

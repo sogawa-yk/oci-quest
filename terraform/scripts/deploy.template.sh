@@ -53,7 +53,9 @@ sqlplus ADMIN/"${atp_pw}"@${db_name}_tp @/root/catalogue.sql
 
 # Get binaries
 get_object /root/mushop-bin.tar.xz ${mushop_app_par}
-tar xvf /root/mushop-bin.tar.xz -C /
+# Unzip because GitHub Artifact is Zip compressed...
+unzip /root/mushop-bin.tar.xz -d /root
+tar xvf /root/mushop-basic.tar.xz -C /
 
 # Allow httpd access to storefront
 chcon -R -t httpd_sys_content_t /app/storefront/
