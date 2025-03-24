@@ -32,4 +32,5 @@ jobs:
           name: mushop-basic.tar.xz
           path: terraform/scripts/mushop-basic.tar.xz
   tag_and_release_note:
+    needs: [build_and_publish_artifact]
     uses: ./.github/workflows/tag_and_release_note.yaml
