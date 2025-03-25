@@ -43,12 +43,12 @@ resource "null_resource" "download_tar" {
 }
 
 resource "oci_objectstorage_object" "mushop_basic" {
+  depends_on   = [null_resource.download_tar]
   bucket       = oci_objectstorage_bucket.mushop.name
   namespace    = local.namespace
   object       = "mushop_basic"
   source       = "./mushop-basic.tar.xz"
   content_type = "application/x-tar"
-  depends_on   = [null_resource.download_tar]
 }
 resource "oci_objectstorage_preauthrequest" "mushop_lite_preauth" {
   access_type  = "ObjectRead"
