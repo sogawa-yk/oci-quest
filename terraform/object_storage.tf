@@ -38,7 +38,7 @@ resource "null_resource" "download_tar" {
     always_run = timestamp()
   }
   provisioner "local-exec" {
-    command = format("curl -o ./mushop-basic.tar.xz -OL https://github.com/oracle-japan/oci-quest/releases/download/%s/mushop-basic.tar.xz", replace(file("${path.module}/VERSION"), "\n", ""))
+    command = format("curl -o /tmp/mushop-basic.tar.xz -OL https://github.com/oracle-japan/oci-quest/releases/download/%s/mushop-basic.tar.xz", replace(file("${path.module}/VERSION"), "\n", ""))
   }
 }
 
@@ -47,7 +47,7 @@ resource "oci_objectstorage_object" "mushop_basic" {
   bucket       = oci_objectstorage_bucket.mushop.name
   namespace    = local.namespace
   object       = "mushop_basic"
-  source       = "./mushop-basic.tar.xz"
+  source       = "/tmp/mushop-basic.tar.xz"
   content_type = "application/x-tar"
 }
 resource "oci_objectstorage_preauthrequest" "mushop_lite_preauth" {
