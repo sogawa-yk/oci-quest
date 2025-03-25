@@ -38,7 +38,7 @@ resource "null_resource" "download_tar" {
     always_run = timestamp()
   }
   provisioner "local-exec" {
-    command = format("wget -O ./mushop-basic.tar.xz https://github.com/oracle-japan/oci-quest/releases/download/%s/mushop-basic.tar.xz", replace(file("${path.module}/VERSION"), "\n", ""))
+    command = format("curl -o ./mushop-basic.tar.xz -OL https://github.com/oracle-japan/oci-quest/releases/download/%s/mushop-basic.tar.xz", replace(file("${path.module}/VERSION"), "\n", ""))
   }
 }
 
