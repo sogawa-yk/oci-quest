@@ -10,3 +10,6 @@ provider "http" {
 
 provider "null" {
 }
+
+provider "external" {
+}
