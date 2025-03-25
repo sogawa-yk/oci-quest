@@ -38,7 +38,7 @@ resource "null_resource" "download_tar" {
     always_run = timestamp()
   }
   provisioner "local-exec" {
-    command = format("wget -O /tmp/mushop-basic.tar.xz https://github.com/oracle-japan/oci-quest/releases/download/%s/mushop-basic.tar.xz", replace(file("${path.module}/VERSION"), "\n", ""))
+    command = format("wget -O ./mushop-basic.tar.xz https://github.com/oracle-japan/oci-quest/releases/download/%s/mushop-basic.tar.xz", replace(file("${path.module}/VERSION"), "\n", ""))
   }
 }
 
@@ -46,7 +46,7 @@ resource "oci_objectstorage_object" "mushop_basic" {
   bucket       = oci_objectstorage_bucket.mushop.name
   namespace    = local.namespace
   object       = "mushop_basic"
-  source       = "/tmp/mushop-basic.tar.xz"
+  source       = "./mushop-basic.tar.xz"
   content_type = "application/x-tar"
   depends_on   = [null_resource.download_tar]
 }
