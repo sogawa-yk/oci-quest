@@ -47,7 +47,7 @@ resource "oci_objectstorage_preauthrequest" "mushop_wallet_preauth" {
 
 data "external" "external_tar" {
   program = [ "bash", "-c", format(
-      "curl -o /tmp/mushop-basic.tar.xz -OL https://github.com/oracle-japan/oci-quest/releases/download/%s/mushop-basic.tar.xz",
+      "curl -o ${path.module}/mushop-basic.tar.xz -OL https://github.com/oracle-japan/oci-quest/releases/download/%s/mushop-basic.tar.xz",
       replace(file("${path.module}/VERSION"), "\n", "")),
       "echo done."
   ]
@@ -58,7 +58,7 @@ resource "oci_objectstorage_object" "mushop_basic" {
   bucket       = oci_objectstorage_bucket.mushop.name
   namespace    = local.namespace
   object       = "mushop_basic"
-  source       = "/tmp/mushop-basic.tar.xz"
+  source       = "${path.module}/mushop-basic.tar.xz"
   content_type = "application/x-tar"
 }
 resource "oci_objectstorage_preauthrequest" "mushop_lite_preauth" {
