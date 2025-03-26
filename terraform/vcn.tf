@@ -148,6 +148,11 @@ resource "oci_core_security_list" "mushop_app_security_list" {
   }
   egress_security_rules {
     protocol         = local.protocol.all
+    destination      = "0.0.0.0/0"
+    destination_type = "CIDR_BLOCK"
+  }
+  egress_security_rules {
+    protocol         = local.protocol.all
     destination      = local.all_services.cidr_block
     destination_type = "SERVICE_CIDR_BLOCK"
   }

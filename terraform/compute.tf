@@ -13,13 +13,13 @@ locals {
       db_name                 = oci_database_autonomous_database.mushop_atp.db_name
       atp_pw                  = var.database_password
       mushop_media_visibility = true
-      mushop_app_par          = "https://objectstorage.${var.region}.oraclecloud.com${oci_objectstorage_preauthrequest.mushop_lite_preauth.access_uri}"
       wallet_par              = "https://objectstorage.${var.region}.oraclecloud.com${oci_objectstorage_preauthrequest.mushop_wallet_preauth.access_uri}"
       oda_enabled             = false
       oda_uri                 = ""
       oda_channel_id          = ""
       oda_secret              = ""
       oda_user_init_message   = ""
+      version                 = replace(file("${path.module}/VERSION"), "\n", "")
   })
   catalogue_sql_template = templatefile("${path.module}/scripts/catalogue.template.sql",
     {

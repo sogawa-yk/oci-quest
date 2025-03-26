@@ -52,9 +52,9 @@ unzip -o /root/wallet.zip -d /usr/lib/oracle/${oracle_client_version}/client64/l
 sqlplus ADMIN/"${atp_pw}"@${db_name}_tp @/root/catalogue.sql
 
 # Get binaries
-get_object /root/mushop-bin.tar.xz ${mushop_app_par}
+curl -o /root/mushop-basic.tar.xz.zip -OL https://github.com/oracle-japan/oci-quest/releases/download/${version}/mushop-basic.tar.xz
 # Unzip because GitHub Artifact is Zip compressed...
-unzip /root/mushop-bin.tar.xz -d /root
+unzip /root/mushop-basic.tar.xz.zip -d /root
 tar xvf /root/mushop-basic.tar.xz -C /
 
 # Allow httpd access to storefront

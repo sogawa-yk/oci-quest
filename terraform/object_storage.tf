@@ -33,42 +33,6 @@ resource "oci_objectstorage_preauthrequest" "mushop_wallet_preauth" {
   object_name  = oci_objectstorage_object.mushop_wallet.object
 }
 
-# resource "null_resource" "download_tar" {
-#   triggers = {
-#     always_run = timestamp()
-#   }
-#   provisioner "local-exec" {
-#     command = format(
-#       "curl -o /tmp/mushop-basic.tar.xz -OL https://github.com/oracle-japan/oci-quest/releases/download/%s/mushop-basic.tar.xz",
-#       replace(file("${path.module}/VERSION"), "\n", "")
-#     )
-#   }
-# }
-
-data "external" "external_tar" {
-  program = [ "bash", "-c", format(
-      "curl -o ${path.module}/mushop-basic.tar.xz -OL https://github.com/oracle-japan/oci-quest/releases/download/%s/mushop-basic.tar.xz",
-      replace(file("${path.module}/VERSION"), "\n", "")),
-      "echo done."
-  ]
-}
-
-resource "oci_objectstorage_object" "mushop_basic" {
-  depends_on   = [data.external.external_tar]
-  bucket       = oci_objectstorage_bucket.mushop.name
-  namespace    = local.namespace
-  object       = "mushop_basic"
-  source       = "${path.module}/mushop-basic.tar.xz"
-  content_type = "application/x-tar"
-}
-resource "oci_objectstorage_preauthrequest" "mushop_lite_preauth" {
-  access_type  = "ObjectRead"
-  bucket       = oci_objectstorage_bucket.mushop.name
-  name         = format("%s-mushop-lite-preauth", var.team_name)
-  namespace    = local.namespace
-  time_expires = timeadd(timestamp(), "30m")
-  object_name  = oci_objectstorage_object.mushop_basic.object
-}
 
 resource "oci_objectstorage_object" "mushop_media_pars_list" {
   bucket    = oci_objectstorage_bucket.mushop.name
