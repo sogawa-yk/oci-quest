@@ -37,6 +37,18 @@ resource "oci_load_balancer_backend" "mushop-backend" {
   weight           = 1
 }
 
+## Terraform問題追加分
+resource "oci_load_balancer_backend" "mushop_backend_2" {
+  load_balancer_id = oci_load_balancer_load_balancer.mushop_lb.id
+  backendset_name  = oci_load_balancer_backend_set.mushop_backend_set.name
+  ip_address       = oci_core_instance.mushop_app_instance_2.private_ip
+  port             = 80
+  backup           = false
+  drain            = false
+  offline          = false
+  weight           = 1
+}
+
 resource "oci_load_balancer_listener" "mushop_listener_80" {
   load_balancer_id         = oci_load_balancer_load_balancer.mushop_lb.id
   default_backend_set_name = oci_load_balancer_backend_set.mushop_backend_set.name

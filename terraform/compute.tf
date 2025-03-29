@@ -116,3 +116,29 @@ resource "oci_core_instance" "mushop_app_instance" {
     user_data           = data.cloudinit_config.mushop.rendered
   }
 }
+
+## Terraform問題追加分
+resource "oci_core_instance" "mushop_app_instance_2" {
+  availability_domain = local.ad
+  compartment_id      = var.compartment_ocid
+  display_name        = format("%s-mushop-app-2", var.team_name)
+  shape               = local.shape
+  shape_config {
+    ocpus         = 1
+    memory_in_gbs = 16
+  }
+  source_details {
+    source_type = "image"
+    source_id   = local.image
+  }
+  create_vnic_details {
+    subnet_id        = oci_core_subnet.mushop_app_subnet.id
+    display_name     = "primaryvnic"
+    assign_public_ip = false
+    hostname_label   = format("%s-mushop-app-2", var.team_name)
+  }
+  metadata = {
+    ssh_authorized_keys = var.public_key
+    user_data           = data.cloudinit_config.mushop.rendered
+  }
+}
