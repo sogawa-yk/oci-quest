@@ -73,6 +73,8 @@ write_files:
       WantedBy=multi-user.target
 
 runcmd:
+ - echo "CRLF to LF conversion..."
+ - sed -i 's/\r//g; s/^M//g' /root/*.sh
  - echo "Running prep scripts..."
  - /root/setup.preflight.sh
  - echo "Finished prep scripts."
