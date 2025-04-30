@@ -3,23 +3,18 @@ locals {
 
   flattened_members = flatten([
     for team in local.members.teams : [
-      for member in team.members : {
+      for email in team.members : {
         team_name  = team.name
-        username   = member.username
-        full_name  = member.full_name
         email      = member.email
-        role       = member.role
       }
     ]
   ])
 
   member_map = {
     for member in local.flattened_members :
-    member.username => {
-      team_name  = member.team_name
-      full_name  = member.full_name
-      email      = member.email
-      role       = member.role
+    split("@", member.email)[0] => {
+      team_name = member.team_name
+      email     = member.email
     }
   }
 }
@@ -29,6 +24,6 @@ resource "oci_identity_user" "users" {
 
   name           = each.key
   email          = each.value.email
-  description    = each.value.full_name
+  description    = "${each.value.team_name} - ${each.key}"
   compartment_id = var.tenancy_ocid
 }

@@ -4,36 +4,16 @@
       "name": "Team_Alpha",
       "description": "Team Alpha",
       "members": [
-        {
-          "username": "alice",
-          "full_name": "Alice Smith",
-          "email": "alice@example.com",
-          "role": "developer"
-        },
-        {
-          "username": "bob",
-          "full_name": "Bob Johnson",
-          "email": "bob@example.com",
-          "role": "team_lead"
-        }
+        "taro.yamada@example.com",
+        "jiro.yamada@example.com"
       ]
     },
     {
       "name": "Team_Beta",
       "description": "Team Beta",
       "members": [
-        {
-          "username": "charlie",
-          "full_name": "Charlie Brown",
-          "email": "charlie@example.com",
-          "role": "marketer"
-        },
-        {
-          "username": "diana",
-          "full_name": "Diana Evans",
-          "email": "diana@example.com",
-          "role": "manager"
-        }
+          "saburo.sato@example.com",
+          "shiro.sato@example.com"
       ]
     }
   ]
