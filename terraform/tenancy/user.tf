@@ -1,9 +1,5 @@
 locals {
   members = jsondecode(base64decode(var.members_file))
-}
-
-locals {
-  members = jsondecode(base64decode(var.members_file))
 
   flattened_members = flatten([
     for team in local.members.teams : [
