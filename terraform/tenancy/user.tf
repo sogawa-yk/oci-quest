@@ -25,5 +25,5 @@ resource "oci_identity_user" "users" {
   name           = each.key
   email          = each.value.email
   description    = "${each.value.team_name} - ${each.key}"
-  compartment_id = var.tenancy_ocid
+  compartment_id = oci_identity_compartment.teams[each.value.team_name].id
 }
