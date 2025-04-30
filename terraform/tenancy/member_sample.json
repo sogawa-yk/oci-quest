@@ -1,7 +1,7 @@
 {
   "teams": [
     {
-      "name": "Team Alpha",
+      "name": "Team_Alpha",
       "description": "Team Alpha",
       "members": [
         {
@@ -19,7 +19,7 @@
       ]
     },
     {
-      "name": "Team Beta",
+      "name": "Team_Beta",
       "description": "Team Beta",
       "members": [
         {
