@@ -29,6 +29,6 @@ resource "oci_identity_user" "users" {
 
   name           = each.key
   email          = each.value.email
-  description    = each.value.description
+  description    = each.value.full_name
   compartment_id = var.tenancy_ocid
 }
