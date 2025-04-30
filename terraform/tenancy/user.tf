@@ -4,8 +4,7 @@ locals {
 
 resource "oci_identity_user" "users" {
   for_each = {
-    for team in local.members.teams :
-    for member in team.members :
+    for team in local.members.teams, member in team.members :
     member.username => {
       email       = member.email
       description = "User ${member.full_name} from ${team.name} (${member.role})"
