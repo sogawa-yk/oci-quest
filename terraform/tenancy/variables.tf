@@ -5,10 +5,11 @@ variable "region" {
 variable "tenancy_ocid" {
 }
 
-variable "user_emails" {
-  type = list(string)
-  description = "作成するユーザーのメールアドレス一覧"
+variable "members_file" {
+  type = string
+  description = "Base64 encoded JSON string"
 }
+
 
 variable "teams" {
   description = "List of teams and their members"
