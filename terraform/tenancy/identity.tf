@@ -19,7 +19,7 @@ locals {
   }
   
   team_map = {
-    for team in local.members_data.teams :
+    for team in local.members.teams :
     team.name => {
         description = team.description
     }
