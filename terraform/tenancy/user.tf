@@ -5,7 +5,7 @@ locals {
     for team in local.members.teams : [
       for email in team.members : {
         team_name  = team.name
-        email      = member.email
+        email      = email
       }
     ]
   ])
